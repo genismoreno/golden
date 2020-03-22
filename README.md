@@ -6,11 +6,11 @@ All commands are intended to be run from the root folder (golden)
 `python install -r api/scripts/requirements.txt`
 
 ## Api node modules
-`cd api`
+`cd api`  
 `npm i`
 
 ## Client node modules
-`cd client`
+`cd client`  
 `npm i`
 
 ## other requirements
@@ -18,11 +18,11 @@ All commands are intended to be run from the root folder (golden)
 
 ## startup environment
 ### api
-`cd api`
+`cd api`  
 `npm start` (running in localhost:3000)
 
 ### client
-`cd client`
+`cd client`  
 `npm start` (running in localhost:3001)
 
 ## browser
