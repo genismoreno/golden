@@ -6,14 +6,14 @@ const Phrase = require('../models/phrase');
 
 /* POST process */
 router.post('/', function (req, res, next) {
-  if (req.body && req.body.message) {
+  if (req.body && req.body.phrase) {
     getLatestCrc().then(sumCrc => {
-      const pythonProcess = spawn('python', ["scripts/cipher.py", sumCrc, req.body.message]);
+      const pythonProcess = spawn('python', ["scripts/cipher.py", sumCrc, req.body.phrase]);
       pythonProcess.stdout.on('data', (data) => {
         let { message, crc } = JSON.parse(data);
 
         storeMessage(message, crc)
-          .then(() => res.json({ message: message }))
+          .then(() => res.json({ encryptedPhrase: message }))
           .catch(error => {
             let err = new Error(error);
             err.status = 400;
@@ -37,6 +37,14 @@ router.post('/', function (req, res, next) {
     err.status = 400;
     return next(err);
   }
+});
+
+router.delete('/', function (req, res, next) {
+  Phrase.remove({}).then(() => res.end()).catch(error => {
+    let err = new Error(error);
+    err.status = 400;
+    return next(err)
+  });
 });
 
 async function storeMessage(message, crc) {
