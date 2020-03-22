@@ -4,9 +4,9 @@ const mongoose = require('mongoose');
  * Product model schema.
  */
 const phraseSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    price: { type: Number, required: true },
-    description: { type: String }
+    message: { type: String, required: true },
+    sumCrc: { type: Number, required: true },
+    createdAt : { type : Date, default: Date.now }
 });
 
-module.exports = mongoose.model('product', productSchema);
+module.exports = mongoose.model('Phrase', phraseSchema);

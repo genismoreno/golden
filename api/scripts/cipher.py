@@ -1,4 +1,6 @@
+import sys
 import crc8
+import json
 
 LETTERS = 'abcdefghijklmnopqrstuvwxyz'
 
@@ -10,9 +12,6 @@ def createCrc(message):
 
 
 def encrypt(message, prevCrc=0):
-    crcValue = createCrc(message)
-    crcToInt = int(crcValue, 16)
-
     translated = ''
     for symbol in message.lower():
         if symbol in LETTERS:
@@ -24,6 +23,8 @@ def encrypt(message, prevCrc=0):
         else:
             translated = translated + symbol
 
+    crcValue = createCrc(message)
+    crcToInt = int(crcValue, 16)
     return prevCrc + crcToInt, translated
 
 
@@ -38,5 +39,23 @@ def test():
     print('All tests passed')
 
 
+def main(argv):
+    if len(argv) == 2 and argv[1] == 'test':
+        test()
+    elif len(argv) > 2:
+        crc, message = encrypt(" ".join(argv[2:]), int(argv[1]))
+        res = {
+            'crc': crc,
+            'message': message
+        }
+        print(json.dumps(res))
+    else:
+        print('Invalid arguments')
+        sys.exit(1)
+
+    sys.stdout.flush()
+    sys.exit(0)
+
+
 if __name__ == '__main__':
-    test()
+    main(sys.argv)
