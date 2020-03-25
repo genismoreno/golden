@@ -23,26 +23,34 @@ class Form extends React.Component {
             phrase: this.state.phrase
         }).then(response => {
             if (response.status === 200 && response.data && response.data.encryptedPhrase) {
-                console.log(this.state.phrase);
-                console.log(response.data.encryptedPhrase);
                 this.props.addPhraseAction(response.data.encryptedPhrase);
             }
-        });
+        }).catch(error => console.error(error));
         this.setState({
             phrase: ''
         });
     }
 
     resetList = async () => {
-        await axios.delete("http://localhost:3000/process");
+        await axios.delete("http://localhost:3000/process").catch(error => console.error(error));
         window.location.reload();
     }
-    
+
+    correctText = async () => {
+        await axios.put("http://localhost:3000/nlp", {
+            text: this.state.phrase
+        }).then(response => {
+            if (response.status === 200 && response.data && response.data.correctedText) {
+                this.setState({ phrase: response.data.correctedText });
+            }
+        }).catch(error => console.error(error));
+    }
+
     onChange = event => {
         event.preventDefault();
-        const {value} = event.target;
+        const { value } = event.target;
 
-        this.setState({phrase: value});
+        this.setState({ phrase: value });
     }
 
     render() {
@@ -50,19 +58,19 @@ class Form extends React.Component {
             <div id="form-container">
                 <Grid container>
                     <Grid item xs={3} alignItems={"flex-start"} justify={"flex-start"}>
-                        <TextField 
-                        id='phrase'
-                        label='Phrase'
-                        placeholder='phrase'
-                        fullWidth
-                        value={this.state.phrase}
-                        onChange={this.onChange}
-                        required>
+                        <TextField
+                            id='phrase'
+                            label='Phrase'
+                            placeholder='phrase'
+                            fullWidth
+                            value={this.state.phrase}
+                            onChange={this.onChange}
+                            required>
                         </TextField>
                     </Grid>
                     <Grid item xs={1}>
-                        <Button 
-                            variant="contained" 
+                        <Button
+                            variant="contained"
                             color="secondary"
                             disabled={!this.state.phrase}
                             onClick={this.createProcess}
@@ -71,9 +79,18 @@ class Form extends React.Component {
                         </Button>
                     </Grid>
                     <Grid item xs={1}>
-                    <Button 
-                            variant="contained" 
+                        <Button
+                            variant="contained"
                             color="primary"
+                            disabled={!this.state.phrase}
+                            onClick={this.correctText}
+                        >
+                            Correct text
+                        </Button>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <Button
+                            variant="contained"
                             onClick={this.resetList}
                         >
                             Reset list
@@ -86,7 +103,7 @@ class Form extends React.Component {
 }
 
 const mapDispatchToProps = {
-        addPhraseAction
+    addPhraseAction
 };
-  
+
 export default connect(null, mapDispatchToProps)(Form);

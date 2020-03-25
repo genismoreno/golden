@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cors = require('cors');
 
 var historyRouter = require('./routes/history');
+var nlpRouter = require('./routes/nlp');
 var processRouter = require('./routes/process');
 
 var app = express();
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(cors());
 
 app.use('/history', historyRouter);
+app.use('/nlp', nlpRouter);
 app.use('/process', processRouter);
 
 // catch 404 and forward to error handler
@@ -50,7 +52,6 @@ var http = require('http');
 
 var port = process.env.PORT || '3000';
 var host = process.env.HOST || 'localhost';
-//app.set('port', port);
 
 http
   .createServer(app)
